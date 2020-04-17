@@ -1,2 +1,2 @@
 # jbree-hotel
-Manages a hotel booking system.
+See setup/instructions.txt for details on how to install the software.
