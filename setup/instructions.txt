@@ -8,6 +8,7 @@ REQUIREMENTS
 	b) CGI
 	c) JSON
 	d) DBI
+	e) Crypt::PBKDF2
 
 
 SETUP

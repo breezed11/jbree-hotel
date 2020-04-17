@@ -45,18 +45,12 @@ unless ($request) {
 
 $request = decode_json($request);
 
-my $service_mode;
-
-if ( $type eq "api" ) {
-    $service_mode = "api";
-}
-
 my $auth = HotelAuthentication->new();
 
-my $allowed = $auth->auth_check( $request->{Authentication} );
+my $allowed = $auth->auth_check( $request->{Authentication}, $db );
 
 if ( $allowed->{error} ) {
-    print('There has been an error: ' . $allowed->{error} );
+    print( 'There has been an error: ' . $allowed->{error} );
     exit;
 }
 

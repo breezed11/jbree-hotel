@@ -29,5 +29,7 @@ function login() {
         }
     }
 
+    data_to_send = JSON.stringify(data_to_send);
+
     send_request(url_to_send, data_to_send);
 }
