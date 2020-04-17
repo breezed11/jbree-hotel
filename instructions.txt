@@ -1,0 +1,36 @@
+REQUIREMENTS
+
+1. MySQL (or equivalent)
+2. Apache2 (or equivalent)
+3. Perl5
+4. The following CPAN modules for Perl:
+	a) Template::Toolkit
+	b) CGI
+	c) JSON
+	d) DBI
+
+
+SETUP
+
+For the purposes of this, "example_system" shall be the system reference (this should have no spaces or special characters in it) and "Example System" the system name.
+
+1. Set up the database
+	a) Run `CREATE DATABASE example_system`
+	b) Run the create_database.sql contents in your new database
+
+2. Insert config options into the database
+	a) The following will be used as a display name for your company across the system:
+		INSERT INTO system_config SET name = "company_name", value = "Example System";
+	b) The following will be the login timeout across the system in seconds:
+		INSERT INTO system_config SET name = "timeout", value = "600";
+
+3. Copy the relevant modules from this software into /usr/local/lib64/perl5
+
+4. Copy base.html from the setup folder, renaming it to what you want. Recommended to be your system reference, but not essential.
+	a) Change the title tags to what you want the title of the page to be - recommended to be the same as your system name.
+	b) Change the value of the input with an id of "system_ref" to your system reference.
+
+5. Create a system config file by copying system_config.json and changing the relevant options/filename to your system reference. This should be copied to "/etc/hotel/".
+	a) database_name should be the name of your new database.
+	b) database_username should be a user that has access to your database.
+	c) database_password should be the password for the user aforementioned.

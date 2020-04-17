@@ -1,0 +1,45 @@
+button {
+    background-color: lightgrey;
+    color: black;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.button.login {
+    background-color: #4CAF50;
+    color: white;
+    width: 100%;
+}
+
+.login_entry {
+    width: 50%;
+    margin: auto;
+    border: 3px solid grey;
+    padding: 10px;
+    transform: translate(0%, +50%);
+    text-align: center;
+}
+
+.logon_text,
+.logon_input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.logintext {
+    width: 100%;
+    display: inline-block;
+    font-size: xx-large;
+}
