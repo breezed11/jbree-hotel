@@ -8,8 +8,3 @@
         <input id="value_searchfield" class="searchfield">
     </div>
 </div>
-<div>
-    <input type='submit' onclick='load_system_config_results()' class='refresh_results' value='Refresh'>
-    <input type='submit' onclick='new_system_config_option()' class='refresh_results' value='New'>
-</div>
-<div id="system_config_results"></div>

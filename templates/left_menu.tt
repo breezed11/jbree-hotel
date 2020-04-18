@@ -10,4 +10,4 @@
 <a href="#" onclick="window.alert('Room Bookings');">Room Bookings</a>
 <a href="#" onclick="window.alert('Reports');">Reports</a>
 <a href="#" onclick="window.alert('Users');">Users</a>
-<a href="#" onclick="window.alert('System Config');">System Config</a>
+<a href="#" onclick="load_system_config();">System Config</a>

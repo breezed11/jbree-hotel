@@ -94,6 +94,8 @@ CREATE TABLE IF NOT EXISTS system_config (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     value VARCHAR(255),
+    display_name VARCHAR(255),
+    autocreated CHAR,
     added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE = INNODB;
 

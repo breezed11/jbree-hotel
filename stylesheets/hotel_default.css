@@ -4,7 +4,6 @@ button {
     padding: 14px 20px;
     margin: 8px 0;
     border: none;
-    cursor: pointer;
     width: 100%;
 }
 
@@ -89,4 +88,99 @@ button:hover {
     padding: 10px;
     text-align: center;
     font-size: 25px;
+}
+
+.searchfield_container {
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.search_record_container {
+    margin-top: 10px;
+    background-color: lightgrey;
+}
+
+
+.basic_results {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.basic_results td,
+th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.basic_results tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.basic_results tr:hover {
+    background-color: #ddd;
+}
+
+
+.basic_results th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: lightgrey;
+    color: black;
+}
+
+.refresh_results {
+    background-color: grey;
+    color: white;
+    height: 30px;
+    margin: 20px;
+    border: none;
+}
+
+.results_action {
+    background-color: lightgrey;
+    color: black;
+    display: block;
+    border: none;
+}
+
+.new_or_edit {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.new_or_edit_container {
+    background-color: lightgrey;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid grey;
+    width: 80%;
+    height: 80%;
+}
+
+.close_new_or_edit {
+    color: darkgrey;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close_new_or_edit:hover,
+.close_new_or_edit:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }

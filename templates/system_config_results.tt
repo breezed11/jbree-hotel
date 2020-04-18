@@ -1,0 +1,16 @@
+<table class="basic_results">
+    <thead>
+        <th>Config Option</th>
+        <th>Value</th>
+        <th>Edit</th>
+    </thead>
+    <tbody>
+        [% FOREACH record IN data.keys.nsort %]
+           <tr>
+                <td>[% data.$record.display_name %]</td>
+                <td>[% data.$record.value %]</td>
+                <td><input type='submit' onclick='' class='results_action' name='[% data.$record.id %]' value='Edit'></td>
+           </tr>
+        [% END %]
+    </tbody>
+</table>

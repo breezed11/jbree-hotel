@@ -51,20 +51,38 @@ my $auth = HotelAuthentication->new();
 my $allowed = $auth->auth_check( $request->{Authentication}, $db );
 
 if ( $allowed->{error} ) {
-    print '{"error": "true", "error_message": "There has been an error: ' . $allowed->{error} . '"}';
+    print '{"error": "true", "error_message": "There has been an error: '
+      . $allowed->{error} . '"}';
     exit;
 }
 
 my $template = HotelTemplate->new();
 
-if ( $type eq "login" )
-{
-    print '{"cookie": "' . $allowed->{cookie} . '", "csrf_token": "' . $allowed->{csrf_token} . '"}';
+if ( $type eq "login" ) {
+    print '{"cookie": "'
+      . $allowed->{cookie}
+      . '", "csrf_token": "'
+      . $allowed->{csrf_token} . '"}';
 }
 
-if ( $type eq "left_menu" )
-{
+if ( $type eq "left_menu" ) {
     my $html_to_print = HotelTemplate->construct_left_menu();
+    print $html_to_print;
+}
+
+if ( $type eq "system_config" ) {
+    my $html_to_print = HotelTemplate->construct_system_config();
+    print $html_to_print;
+}
+
+if ( $type eq "system_config_results" ) {
+    my $html_to_print = HotelTemplate->construct_system_config_results( $db,
+        $request->{SearchFields} );
+    print $html_to_print;
+}
+
+if ( $type eq "system_config_new" ) {
+    my $html_to_print = HotelTemplate->construct_system_config_new($db);
     print $html_to_print;
 }
 
@@ -145,12 +163,13 @@ See Also   :
 
 sub update_system_config_from_db {
     my $lookup_config_query_string = "SELECT name, value FROM system_config";
-    my $lookup_config_query = $db->prepare($lookup_config_query_string);
+    my $lookup_config_query        = $db->prepare($lookup_config_query_string);
     $lookup_config_query->execute();
-    my $lookup_config_query_results = $lookup_config_query->fetchall_arrayref( {} );
+    my $lookup_config_query_results =
+      $lookup_config_query->fetchall_arrayref( {} );
 
-    foreach my $config_option (@{$lookup_config_query_results}) {
-        $system_config->{$config_option->{name}} = $config_option->{value};
+    foreach my $config_option ( @{$lookup_config_query_results} ) {
+        $system_config->{ $config_option->{name} } = $config_option->{value};
     }
 }
 

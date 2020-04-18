@@ -9,6 +9,7 @@ REQUIREMENTS
 	c) JSON
 	d) DBI
 	e) Crypt::PBKDF2
+6. jqplot for jQuery
 
 
 SETUP
