@@ -24,7 +24,6 @@ use warnings;
 use CGI;
 use DBI;
 use JSON;
-use Template::Toolkit;
 use HotelAuthentication;
 
 my $cgi = CGI->new();
