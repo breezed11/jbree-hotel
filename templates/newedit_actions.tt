@@ -1,0 +1,6 @@
+<div id="left_menu" class="left_menu"><a class="title">Actions</a>
+		<div class="splitter"></div>
+        <a href="#" onclick="save();">Save</a>
+        <a href="#" onclick="save(); close_newedit();">Save and Close</a>
+        <a href="#" onclick="close_newedit();">Close without Saving</a>
+</div>

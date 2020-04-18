@@ -42,9 +42,11 @@ See Also   :
 #################### subroutine header end ####################
 
 sub new {
-    my $self = {};
+    my $invocant = shift;
+    my $class    = ref($invocant) || $invocant;
+    my $self     = {@_};
 
-    bless $self;
+    bless $self, $class;
 
     $self->{crypt} = Crypt::PBKDF2->new();
 
@@ -72,18 +74,17 @@ See Also   :
 sub auth_check {
     my $self      = shift;
     my $auth_hash = shift;
-    my $db        = shift;
 
     my $result = "";
 
     if ( $auth_hash->{cookie} && $auth_hash->{csrf_token} ) {
         $result =
           $self->check_session( $auth_hash->{cookie},
-            $auth_hash->{csrf_token}, $db );
+            $auth_hash->{csrf_token} );
     }
     else {
         $result =
-          $self->login( $auth_hash->{username}, $auth_hash->{password}, $db );
+          $self->login( $auth_hash->{username}, $auth_hash->{password} );
     }
 
     return $result;
@@ -93,11 +94,11 @@ sub auth_check {
 
 =head2 check_session
 
- Usage     : $self->check_session(cookie, csrf_token, db)
+ Usage     : $self->check_session(cookie, csrf_token)
  Purpose   : Checks the given session is valid and updates the expiry 
  if so.
  Returns   : Session authentication status
- Argument  : cookie, csrf_token, db
+ Argument  : cookie, csrf_token
  Throws    : 
  Comment   : 
 
@@ -111,13 +112,12 @@ sub check_session {
     my $self       = shift;
     my $cookie     = shift;
     my $csrf_token = shift;
-    my $db         = shift;
 
-    my $lookup_query_string =
-"SELECT id FROM sessions WHERE cookie = '$cookie' AND csrf_token = '$csrf_token' AND ( last_active > NOW() - INTERVAL 10 MINUTE )";
-    my $lookup_query = $db->prepare($lookup_query_string);
-    $lookup_query->execute();
-    my $lookup_query_results = $lookup_query->fetchall_arrayref( {} );
+    my $lookup_query_string = "SELECT id FROM sessions";
+    my $interval = $self->{config}->{timeout};
+    my $where =
+"cookie = '$cookie' AND csrf_token = '$csrf_token' AND ( last_active > NOW() - INTERVAL $interval SECOND )";
+    my $lookup_query_results = $self->{DB}->run_query($lookup_query_string, $where);
 
     unless ( $lookup_query_results->[0] ) {
         return { error => "Session has expired.", final_result => "FAIL" };
@@ -130,8 +130,7 @@ sub check_session {
     # Update the session
 
     my $update_session_query_string = "UPDATE sessions SET last_active = NOW()";
-    my $update_session_query = $db->prepare($update_session_query_string);
-    $update_session_query->execute();
+    $self->{DB}->run_query($update_session_query_string);
 
     $self->{cookie}     = $cookie;
     $self->{csrf_token} = $csrf_token;
@@ -147,10 +146,10 @@ sub check_session {
 
 =head2 login
 
- Usage     : $self->login(username, password, db)
+ Usage     : $self->login(username, password)
  Purpose   : Logs the user in if possible and creates a session
  Returns   : Login status
- Argument  : username, password, db
+ Argument  : username, password
  Throws    : 
  Comment   : 
 
@@ -164,15 +163,13 @@ sub login {
     my $self     = shift;
     my $username = shift;
     my $password = shift;
-    my $db       = shift;
 
     # Check user credentials
 
     my $lookup_query_string =
-      "SELECT id, pw, active FROM users WHERE username = '$username'";
-    my $lookup_query = $db->prepare($lookup_query_string);
-    $lookup_query->execute();
-    my $lookup_query_results = $lookup_query->fetchall_arrayref( {} );
+      "SELECT id, pw, active FROM users";
+    my $where = "username = '$username'";
+    my $lookup_query_results = $self->{DB}->run_query($lookup_query_string, $where);
 
     unless ( $lookup_query_results->[0] ) {
         return { error => "No user found.", final_result => "FAIL" };
@@ -196,7 +193,7 @@ sub login {
     # Create a new session
 
     $self->create_new_user_session( $username,
-        $lookup_query_results->[0]->{id}, $db );
+        $lookup_query_results->[0]->{id} );
 
     return {
         final_result => "PASS",
@@ -209,10 +206,10 @@ sub login {
 
 =head2 create_new_user_session
 
- Usage     : $self->create_new_user_session(username, db)
+ Usage     : $self->create_new_user_session(username)
  Purpose   : Creates a session and clears down previous sessions
  Returns   : Cookie and CSRF token
- Argument  : username, db
+ Argument  : username
  Throws    : 
  Comment   : 
 
@@ -226,14 +223,13 @@ sub create_new_user_session {
     my $self     = shift;
     my $username = shift;
     my $userid   = shift;
-    my $db       = shift;
 
     # Clear down any old user sessions
 
     my $clear_users_query_string =
-      "DELETE FROM sessions WHERE user_id = '$userid'";
-    my $clear_users_query = $db->prepare($clear_users_query_string);
-    $clear_users_query->execute();
+      "DELETE FROM sessions";
+    my $where = "user_id = '$userid'";
+    $self->{DB}->run_query($clear_users_query_string, $where);
 
     # Create the new cookie and csrf token
 
@@ -245,8 +241,7 @@ sub create_new_user_session {
 
     my $new_session_query_string =
 "INSERT INTO sessions SET user_id = '$userid', last_active = NOW(), cookie = '$new_cookie', csrf_token = '$new_csrf_token'";
-    my $new_session_query = $db->prepare($new_session_query_string);
-    $new_session_query->execute();
+    $self->{DB}->run_query($new_session_query_string);
 
     return 1;
 }

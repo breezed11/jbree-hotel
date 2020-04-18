@@ -22,10 +22,11 @@ use strict;
 use warnings;
 
 use CGI;
-use DBI;
 use JSON;
 use HotelAuthentication;
 use HotelTemplate;
+use HotelDB;
+use HotelUpdateInsert;
 
 my $cgi = CGI->new();
 
@@ -36,7 +37,7 @@ my $type       = $cgi->param('type');
 my $system_ref = $cgi->param('system_ref');
 
 my $system_config = create_system_config();
-my $db            = create_db_connection();
+my $db = HotelDB->new( config => $system_config );
 update_system_config_from_db();
 
 unless ($request) {
@@ -46,17 +47,15 @@ unless ($request) {
 
 $request = decode_json($request);
 
-my $auth = HotelAuthentication->new();
+my $auth = HotelAuthentication->new( DB => $db, config => $system_config );
 
-my $allowed = $auth->auth_check( $request->{Authentication}, $db );
+my $allowed = $auth->auth_check( $request->{Authentication} );
 
 if ( $allowed->{error} ) {
     print '{"error": "true", "error_message": "There has been an error: '
       . $allowed->{error} . '"}';
     exit;
 }
-
-my $template = HotelTemplate->new();
 
 if ( $type eq "login" ) {
     print '{"cookie": "'
@@ -65,26 +64,23 @@ if ( $type eq "login" ) {
       . $allowed->{csrf_token} . '"}';
 }
 
-if ( $type eq "left_menu" ) {
-    my $html_to_print = HotelTemplate->construct_left_menu();
-    print $html_to_print;
+my $response;
+
+if ( $type =~ /updateinsert/ ) {
+
+    my $updateinsert =
+      HotelUpdateInsert->new( DB => $db, request => $request, type => $type );
+
+    $response = $updateinsert->update_insert_record();
+}
+else {
+    my $template =
+      HotelTemplate->new( DB => $db, request => $request, type => $type );
+
+    $response = $template->new_template();
 }
 
-if ( $type eq "system_config" ) {
-    my $html_to_print = HotelTemplate->construct_system_config();
-    print $html_to_print;
-}
-
-if ( $type eq "system_config_results" ) {
-    my $html_to_print = HotelTemplate->construct_system_config_results( $db,
-        $request->{SearchFields} );
-    print $html_to_print;
-}
-
-if ( $type eq "system_config_new" ) {
-    my $html_to_print = HotelTemplate->construct_system_config_new($db);
-    print $html_to_print;
-}
+print $response if $response;
 
 #################### subroutine header begin ####################
 
@@ -115,37 +111,6 @@ sub create_system_config {
 
 #################### subroutine header begin ####################
 
-=head2 create_db_connection
-
- Usage     : create_db_connection()
- Purpose   : Builds a database connection to use
- Returns   : A DBI object
- Argument  : Nothing
- Throws    : 
- Comment   : 
-
-See Also   :
-
-=cut
-
-#################### subroutine header end ####################
-
-sub create_db_connection {
-    my $dbi_driver =
-        "DBI:mysql:"
-      . $system_config->{database_name}
-      . ";port=3306;mysql_connect_timeout=5";
-
-    return DBI->connect(
-        $dbi_driver,
-        $system_config->{database_username},
-        $system_config->{database_password},
-        { TaintIn => 1, mysql_enable_utf8 => 1 }
-    );
-}
-
-#################### subroutine header begin ####################
-
 =head2 update_system_config_from_db
 
  Usage     : update_system_config_from_db()
@@ -163,10 +128,8 @@ See Also   :
 
 sub update_system_config_from_db {
     my $lookup_config_query_string = "SELECT name, value FROM system_config";
-    my $lookup_config_query        = $db->prepare($lookup_config_query_string);
-    $lookup_config_query->execute();
     my $lookup_config_query_results =
-      $lookup_config_query->fetchall_arrayref( {} );
+      $db->run_query($lookup_config_query_string);
 
     foreach my $config_option ( @{$lookup_config_query_results} ) {
         $system_config->{ $config_option->{name} } = $config_option->{value};

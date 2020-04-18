@@ -25,11 +25,80 @@ use warnings;
 use Template;
 
 sub new {
-    my $self = {};
+    my $invocant = shift;
+    my $class    = ref($invocant) || $invocant;
+    my $self     = {@_};
 
-    bless $self;
+    bless $self, $class;
 
     return $self;
+}
+
+sub new_template {
+    my $self = shift;
+
+    my $html_to_print;
+
+    if ( $self->{type} eq "left_menu" ) {
+        $html_to_print = $self->construct_left_menu();
+    }
+
+    if ( $self->{type} eq "system_config" ) {
+        $html_to_print = $self->construct_system_config();
+    }
+
+    if ( $self->{type} eq "system_config_results" ) {
+        $html_to_print = $self->construct_system_config_results();
+    }
+
+    if ( $self->{type} eq "system_config_new" ) {
+        $html_to_print = $self->construct_system_config_new();
+    }
+
+    return $html_to_print;
+}
+
+sub construct_where {
+    my $self       = shift;
+    my $use_equals = shift;
+
+    my $where = "";
+
+    foreach my $key ( keys %{ $self->{request}->{SearchFields} } ) {
+        if ( defined $self->{request}->{SearchFields}->{$key}
+            && $self->{request}->{SearchFields}->{$key} ne "" )
+        {
+            if ($use_equals) {
+                $where .=
+                  " AND $key = '"
+                  . $self->{request}->{SearchFields}->{$key} . "'";
+            }
+            else {
+                $where .=
+                  " AND $key LIKE '%"
+                  . $self->{request}->{SearchFields}->{$key} . "%'";
+            }
+        }
+    }
+
+    $where = "( 1 = 1 )" . $where if $where;
+
+    return $where;
+}
+
+sub construct_vars {
+    my $self                 = shift;
+    my $lookup_query_results = shift;
+
+    my $sorted = {};
+    my $count  = "0";
+
+    foreach my $record ( @{$lookup_query_results} ) {
+        $sorted->{$count} = $record;
+        $count++;
+    }
+
+    return $sorted ? { 'data' => $sorted } : {};
 }
 
 sub construct_left_menu {
@@ -69,33 +138,15 @@ sub construct_system_config {
 }
 
 sub construct_system_config_results {
-    my $self         = shift;
-    my $db           = shift;
-    my $searchfields = shift;
+    my $self = shift;
 
     my $lookup_query_string =
-      "SELECT id, display_name, value FROM system_config WHERE 1 = 1";
+      "SELECT id, name, display_name, value FROM system_config";
 
-    foreach my $key ( keys %{$searchfields} ) {
-        if ( defined $searchfields->{$key} && $searchfields->{$key} ne "" ) {
-            $lookup_query_string .=
-              " AND $key LIKE '%" . $searchfields->{$key} . "%'";
-        }
-    }
+    my $lookup_query_results =
+      $self->{DB}->run_query( $lookup_query_string, $self->construct_where() );
 
-    my $lookup_query = $db->prepare($lookup_query_string);
-    $lookup_query->execute();
-    my $lookup_query_results = $lookup_query->fetchall_arrayref( {} );
-
-    my $sorted = {};
-    my $count  = "0";
-
-    foreach my $record ( @{$lookup_query_results} ) {
-        $sorted->{$count} = $record;
-        $count++;
-    }
-
-    my $vars = { 'data' => $sorted };
+    my $vars = $self->construct_vars($lookup_query_results);
     my $system_config_results;
 
     my $template = Template->new(
@@ -113,23 +164,15 @@ sub construct_system_config_results {
 
 sub construct_system_config_new {
     my $self = shift;
-    my $db   = shift;
 
-    my $placeholder_query_string =
-      "INSERT INTO system_config SET autocreated = 'Y'";
+    my $lookup_query_string =
+      "SELECT id, name, display_name, value FROM system_config";
 
-    my $placeholder_query = $db->prepare($placeholder_query_string);
-    $placeholder_query->execute();
+    my $lookup_query_results =
+      $self->{DB}
+      ->run_query( $lookup_query_string, $self->construct_where("use_equals") );
 
-    my $last_insert_id_query_string = "SELECT LAST_INSERT_ID() AS id";
-    my $last_insert_id_query = $db->prepare($last_insert_id_query_string);
-    $last_insert_id_query->execute();
-
-    my $last_insert_id =
-      $last_insert_id_query->fetchall_arrayref( {} )->[0]->{id};
-
-    my $vars = { 'data' => $last_insert_id };
-
+    my $vars = $self->construct_vars($lookup_query_results);
     my $system_config_new;
 
     my $template = Template->new(

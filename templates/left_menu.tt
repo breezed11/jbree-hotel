@@ -11,3 +11,5 @@
 <a href="#" onclick="window.alert('Reports');">Reports</a>
 <a href="#" onclick="window.alert('Users');">Users</a>
 <a href="#" onclick="load_system_config();">System Config</a>
+<div class="splitter"></div>
+<a href="#" onclick="window.alert('logout');">Logout</a>

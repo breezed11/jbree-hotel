@@ -21,8 +21,7 @@ function check_for_errors(data) {
             window.alert(data.error_message);
             location.reload();
         }
-    }
-    catch(err) {
+    } catch (err) {
         //do nothing, it means a template was sent
     }
 }
@@ -110,7 +109,7 @@ function load_system_config() {
             document.getElementById("action_pane").innerHTML = result;
             document.getElementById("title").innerHTML = "System Config";
             load_system_config_results(url_to_send);
-            
+
         }
     });
 }
@@ -142,7 +141,7 @@ function load_system_config_results() {
     });
 }
 
-function new_system_config_option() {
+function new_system_config_option(id) {
     var url_to_send = 'cgi-bin/hotel.pl';
     var data_to_send = {
         "Authentication": {
@@ -150,6 +149,19 @@ function new_system_config_option() {
             "csrf_token": document.getElementById("csrf_token").value
         }
     };
+
+    if (id) {
+        data_to_send = {
+            "Authentication": {
+                "cookie": document.getElementById("cookie").value,
+                "csrf_token": document.getElementById("csrf_token").value
+            },
+            "SearchFields": {
+                "id": id
+            }
+        };
+    }
+
     data_to_send = JSON.stringify(data_to_send);
     $.ajax(url_to_send, {
         type: 'POST',
@@ -163,16 +175,64 @@ function new_system_config_option() {
             var new_or_edit = document.getElementById("new_or_edit");
             var span = document.getElementsByClassName("close_new_or_edit")[0];
             new_or_edit.style.display = "block";
-            span.onclick = function() {
+            span.onclick = function () {
                 new_or_edit.style.display = "none";
             }
-            window.onclick = function(event) {
-                if (event.target == modal) {
+            window.onclick = function (event) {
+                if (event.target == new_or_edit) {
                     new_or_edit.style.display = "none";
                 }
             }
             var elem = document.getElementById("new_or_edit_content");
             elem.innerHTML = result;
+        }
+    });
+}
+
+function close_newedit() {
+    document.getElementById("new_or_edit").style.display = "none";
+}
+
+function save() {
+    var url_to_send = 'cgi-bin/hotel.pl';
+
+    var inputs = document.getElementsByClassName("ToSave");
+
+    var fields = '{';
+
+    for (item of inputs) {
+        fields += '"';
+        fields += item.name;
+        fields += '":"';
+        fields += item.value;
+        fields += '",';
+    }
+
+    fields += '"":""}';
+
+    var data_to_send = '{"Authentication":{"cookie":"';
+    data_to_send += document.getElementById("cookie").value;
+    data_to_send += '","csrf_token":"'
+    data_to_send += document.getElementById("csrf_token").value;
+    data_to_send += '"},"NewEditFields":';
+    data_to_send += fields;
+    data_to_send += '}';
+
+    $.ajax(url_to_send, {
+        type: 'POST',
+        data: {
+            request: data_to_send,
+            system_ref: document.getElementById("system_ref").value,
+            type: document.getElementById("save_name").value
+        },
+        success: function (result) {
+            var inputs = document.getElementsByClassName("ToSave");
+            for (item of inputs) {
+                if (item.name == "id") {
+                    item.value = result;
+                }
+            }
+            window.alert("Saved");
         }
     });
 }

@@ -1,10 +1,25 @@
-<div id="system_config_container" class="search_record_container">
-    <div id="name_container" class="searchfield_container">
-        <label>Config Option</label>
-        <input id="name_searchfield" class="searchfield">
-    </div>
-    <div id="value_container" class="searchfield_container">
-        <label>Value</label>
-        <input id="value_searchfield" class="searchfield">
-    </div>
+<script src="/js/system_config.js"></script>
+[% INCLUDE newedit_actions.tt %]
+
+<div class="titlebar">
+    <a id="newedit_title">New System Config Option</a>
 </div>
+
+[% FOREACH record IN data.keys.nsort %]
+    <div id="system_config_container" class="search_record_container">
+        <input id="id_neweditfield" type="hidden" name="id" class="ToSave"  value="[% data.$record.id %]">
+        <input id="save_name" type="hidden" value="updateinsert_system_config_save">
+        <div id="name_container" class="searchfield_container">
+            <label>Config Option Name</label>
+            <input id="name_neweditfield" class="searchfield ToSave" name="name" value="[% data.$record.name %]">
+        </div>
+        <div id="name_container" class="searchfield_container">
+            <label>Config Option Display Name</label>
+            <input id="display_name_neweditfield" class="searchfield ToSave" name="display_name" value="[% data.$record.display_name %]">
+        </div>
+        <div id="value_container" class="searchfield_container">
+            <label>Value</label>
+            <input id="value_neweditfield" class="searchfield ToSave" name="value" value="[% data.$record.value %]">
+        </div>
+    </div>
+[% END %]

@@ -75,6 +75,7 @@ button:hover {
 .left_menu .splitter {
     background-color: grey;
     height: 5px;
+    margin: 5px;
 }
 
 .main {
@@ -152,7 +153,6 @@ th {
     display: none;
     position: fixed;
     z-index: 9999;
-    padding-top: 100px;
     left: 0;
     top: 0;
     width: 100%;
@@ -164,11 +164,12 @@ th {
 
 .new_or_edit_container {
     background-color: lightgrey;
-    margin: auto;
+    margin-left: 350px;
+    margin-right: 50px;
+    margin-top: 50px;
+    margin-bottom: 50px;
     padding: 20px;
     border: 1px solid grey;
-    width: 80%;
-    height: 80%;
 }
 
 .close_new_or_edit {
@@ -183,4 +184,16 @@ th {
     color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+
+.newedit_buttons {
+    background-color: grey;
+    color: white;
+    height: 30px;
+    margin: 20px;
+    border: none;
+}
+
+.hidden {
+    display: none;
 }
