@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 CREATE TABLE IF NOT EXISTS room_bookings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     room_id INT,
-    user_id INT,
+    customer_id INT,
     confirmed CHAR,
     date_from DATE,
     date_to DATE,
@@ -94,5 +94,17 @@ CREATE TABLE IF NOT EXISTS system_config (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     value VARCHAR(255),
+    added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE = INNODB;
+
+CREATE TABLE IF NOT EXISTS customers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255),
+    banned CHAR,
+    forename VARCHAR(255),
+    surname VARCHAR(255),
+    postcode VARCHAR(255),
+    phone VARCHAR(255),
+    user_id INT,
     added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE = INNODB;
