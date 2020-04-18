@@ -26,6 +26,10 @@ function check_for_errors(data) {
     }
 }
 
+function logout() {
+    location.reload();
+}
+
 function login() {
     var url_to_send = 'cgi-bin/hotel.pl';
     var username = document.getElementById("uname").value;
