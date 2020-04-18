@@ -1,5 +1,6 @@
 <a href="#" onclick="window.alert('Dashboard');">Dashboard</a>
 <a href="#" onclick="window.alert('Rooms');">Rooms</a>
+<a href="#" onclick="window.alert('Room Groups');">Room Groups</a>
 <a href="#" onclick="window.alert('Floors');">Floors</a>
 <a href="#" onclick="window.alert('Buildings');">Buildings</a>
 <a href="#" onclick="window.alert('Locations');">Locations</a>
