@@ -126,4 +126,32 @@ sub create_db_connection {
     );
 }
 
+#################### subroutine header begin ####################
+
+=head2 update_system_config_from_db
+
+ Usage     : update_system_config_from_db()
+ Purpose   : Adds system config from DB
+ Returns   : Nothing
+ Argument  : Nothing
+ Throws    : 
+ Comment   : 
+
+See Also   :
+
+=cut
+
+#################### subroutine header end ####################
+
+sub update_system_config_from_db {
+    my $lookup_config_query_string = "SELECT name, value FROM system_config";
+    my $lookup_config_query = $db->prepare($lookup_config_query_string);
+    $lookup_config_query->execute();
+    my $lookup_config_query_results = $lookup_config_query->fetchall_arrayref( {} );
+
+    foreach my $config_option (@{$lookup_config_query_results}) {
+        $system_config->{$config_option->{name}} = $config_option->{value};
+    }
+}
+
 1;
