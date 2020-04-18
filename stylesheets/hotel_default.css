@@ -46,21 +46,22 @@ button:hover {
 
 .left_menu {
     height: 100%;
-    width: 200px;
+    width: 300px;
     position: fixed;
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #111;
+    background-color: black;
     overflow-x: hidden;
 }
 
 .left_menu a {
-    padding: 6px 6px 6px 32px;
+    padding: 5px;
     text-decoration: none;
     font-size: 25px;
-    color: #818181;
+    color: grey;
     display: block;
+    text-align: center;
 }
 
 .left_menu a:hover {
@@ -68,10 +69,17 @@ button:hover {
 }
 
 .left_menu .title {
-    background-color: grey;
+    background-color: black;
     color: white !important;
+    padding: 10px;
+    text-align: center;
+}
+
+.left_menu .splitter {
+    background-color: grey;
+    height: 5px;
 }
 
 .action_pane {
-    margin-left: 200px;
+    margin-left: 300px;
 }

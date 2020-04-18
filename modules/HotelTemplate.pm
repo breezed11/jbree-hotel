@@ -22,7 +22,7 @@ package HotelTemplate;
 use strict;
 use warnings;
 
-use Template::Toolkit;
+use Template;
 
 #################### subroutine header begin ####################
 
@@ -53,10 +53,10 @@ sub new {
 
 =head2 construct_left_menu
 
- Usage     : $self->construct_left_menu(db)
+ Usage     : $self->construct_left_menu()
  Purpose   : Constructs the HTML for the left menu
  Returns   : Raw HTML
- Argument  : db
+ Argument  : Nothing
  Throws    : 
  Comment   : 
 
@@ -68,5 +68,19 @@ See Also   :
 
 sub construct_left_menu {
     my $self = shift;
-    my $db   = shift;
+
+    my $left_menu;
+    my $vars = {};
+
+    my $template = Template->new(
+        {
+            INCLUDE_PATH => '/var/www/html/templates'
+        }
+    );
+
+    $template->process( "left_menu.tt", $vars, \$left_menu ) || die "Template processing failed : ", $template->error(), "\n";;
+
+    return $left_menu;
 }
+
+1;

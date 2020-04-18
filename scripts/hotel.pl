@@ -25,6 +25,7 @@ use CGI;
 use DBI;
 use JSON;
 use HotelAuthentication;
+use HotelTemplate;
 
 my $cgi = CGI->new();
 
@@ -36,6 +37,7 @@ my $system_ref = $cgi->param('system_ref');
 
 my $system_config = create_system_config();
 my $db            = create_db_connection();
+update_system_config_from_db();
 
 unless ($request) {
     print("No request specified");
@@ -49,11 +51,22 @@ my $auth = HotelAuthentication->new();
 my $allowed = $auth->auth_check( $request->{Authentication}, $db );
 
 if ( $allowed->{error} ) {
-    print( 'There has been an error: ' . $allowed->{error} );
+    print '{"error": "true", "error_message": "There has been an error: ' . $allowed->{error} . '"}';
     exit;
 }
 
-print('test_success');
+my $template = HotelTemplate->new();
+
+if ( $type eq "login" )
+{
+    print '{"cookie": "' . $allowed->{cookie} . '", "csrf_token": "' . $allowed->{csrf_token} . '"}';
+}
+
+if ( $type eq "left_menu" )
+{
+    my $html_to_print = HotelTemplate->construct_left_menu();
+    print $html_to_print;
+}
 
 #################### subroutine header begin ####################
 

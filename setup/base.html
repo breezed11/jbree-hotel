@@ -5,14 +5,17 @@
 	<title>Example System</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<input id="system_ref" name="system_ref" type="hidden" value="example_system">
 	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 	<script src="/js/hotel.js"></script>
 	<link rel="stylesheet" href="stylesheets/hotel_default.css">
 </head>
 
 <body>
-	<div id="left_menu" class="left_menu"><a class="title">Example System</a></div>
+	<input id="system_ref" name="system_ref" type="hidden" value="example_system">
+	<input id="cookie" name="cookie" type="hidden" value="">
+	<input id="csrf_token" name="csrf_token" type="hidden" value="">
+	<div id="left_menu" class="left_menu"><a class="title">Example System</a><div class="splitter"></div></div>
+	<div id="main" class="main"></div>
 	<div id="action_pane" class="action_pane">
 		<div class="login_entry">
 			<span class="logintext">Login</span>

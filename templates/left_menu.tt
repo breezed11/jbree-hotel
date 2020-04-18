@@ -1,1 +1,13 @@
-<a href="#" onclick="window.alert('test')">User Management</a>
+<a href="#" onclick="window.alert('Dashboard');">Dashboard</a>
+<a href="#" onclick="window.alert('Rooms');">Rooms</a>
+<a href="#" onclick="window.alert('Floors');">Floors</a>
+<a href="#" onclick="window.alert('Buildings');">Buildings</a>
+<a href="#" onclick="window.alert('Locations');">Locations</a>
+<a href="#" onclick="window.alert('Attributes');">Attributes</a>
+<a href="#" onclick="window.alert('Customers');">Customers</a>
+<a href="#" onclick="window.alert('Cleaning');">Cleaning</a>
+<a href="#" onclick="window.alert('Suppliers');">Suppliers</a>
+<a href="#" onclick="window.alert('Room Bookings');">Room Bookings</a>
+<a href="#" onclick="window.alert('Reports');">Reports</a>
+<a href="#" onclick="window.alert('Users');">Users</a>
+<a href="#" onclick="window.alert('System Config');">System Config</a>
