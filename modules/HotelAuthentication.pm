@@ -79,7 +79,7 @@ sub auth_check {
     if ( $auth_hash->{cookie} && $auth_hash->{csrf_token} ) {
         $result =
           $self->check_session( $auth_hash->{cookie},
-            $auth_hash->{csrf_token} );
+            $auth_hash->{csrf_token}, $db );
     }
     else {
         $result =
@@ -111,8 +111,36 @@ sub check_session {
     my $self       = shift;
     my $cookie     = shift;
     my $csrf_token = shift;
+    my $db         = shift;
 
-    return "PASS";
+    my $lookup_query_string =
+"SELECT id FROM sessions WHERE cookie = '$cookie' AND csrf_token = '$csrf_token' AND ( last_active > NOW() - INTERVAL 10 MINUTE )";
+    my $lookup_query = $db->prepare($lookup_query_string);
+    $lookup_query->execute();
+    my $lookup_query_results = $lookup_query->fetchall_arrayref( {} );
+
+    unless ( $lookup_query_results->[0] ) {
+        return { error => "Session has expired.", final_result => "FAIL" };
+    }
+
+    if ( $lookup_query_results->[1] ) {
+        return { error => "Too many sessions found.", final_result => "FAIL" };
+    }
+
+    # Update the session
+
+    my $update_session_query_string = "UPDATE sessions SET last_active = NOW()";
+    my $update_session_query = $db->prepare($update_session_query_string);
+    $update_session_query->execute();
+
+    $self->{cookie}     = $cookie;
+    $self->{csrf_token} = $csrf_token;
+
+    return {
+        final_result => "PASS",
+        cookie       => $self->{cookie},
+        csrf_token   => $self->{csrf_token}
+    };
 }
 
 #################### subroutine header begin ####################

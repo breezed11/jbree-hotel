@@ -14,16 +14,22 @@
 	<input id="system_ref" name="system_ref" type="hidden" value="example_system">
 	<input id="cookie" name="cookie" type="hidden" value="">
 	<input id="csrf_token" name="csrf_token" type="hidden" value="">
-	<div id="left_menu" class="left_menu"><a class="title">Example System</a><div class="splitter"></div></div>
-	<div id="main" class="main"></div>
-	<div id="action_pane" class="action_pane">
-		<div class="login_entry">
-			<span class="logintext">Login</span>
-			<input id="uname" class="logon_input" type="text" placeholder="Username" name="uname" required>
-			<input id="psw" class="logon_input" type="password" placeholder="Password" name="psw" required>
-			<button id="btnLogin" class="button login" type="button" onclick="login()">Login</button>
-			<p></p>
-			<span>Forgot your password? Call your system administrators to get it reset.</span>
+	<div id="left_menu" class="left_menu"><a class="title">Example System</a>
+		<div class="splitter"></div>
+	</div>
+	<div id="main" class="main">
+		<div class="titlebar">
+			<a id="title">Login</span>
+		</div>
+		<div class="splitter"></div>
+		<div id="action_pane" class="action_pane">
+			<div class="login_entry">
+				<input id="uname" class="logon_input" type="text" placeholder="Username" name="uname" required>
+				<input id="psw" class="logon_input" type="password" placeholder="Password" name="psw" required>
+				<button id="btnLogin" class="button login" type="button" onclick="login()">Login</button>
+				<p></p>
+				<span>Forgot your password? Call your system administrators to get it reset.</span>
+			</div>
 		</div>
 	</div>
 </body>

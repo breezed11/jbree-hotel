@@ -65,14 +65,14 @@ CREATE TABLE IF NOT EXISTS users (
     forename VARCHAR(255),
     surname VARCHAR(255),
     role VARCHAR(255),
-    last_password_change DATE,
+    last_password_change DATETIME,
     added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE = INNODB;
 
 CREATE TABLE IF NOT EXISTS sessions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
-    last_active DATE,
+    last_active DATETIME,
     ip VARCHAR(100),
     cookie CHAR(128),
     csrf_token CHAR(128),
@@ -84,8 +84,8 @@ CREATE TABLE IF NOT EXISTS room_bookings (
     room_id INT,
     customer_id INT,
     confirmed CHAR,
-    date_from DATE,
-    date_to DATE,
+    date_from DATETIME,
+    date_to DATETIME,
     notes TEXT,
     added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE = INNODB;

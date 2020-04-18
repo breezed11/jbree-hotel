@@ -21,7 +21,6 @@ button:hover {
 .login_entry {
     width: 50%;
     margin: auto;
-    border: 3px solid grey;
     padding: 10px;
     transform: translate(0%, +50%);
     text-align: center;
@@ -33,7 +32,6 @@ button:hover {
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
-    border: 1px solid #ccc;
     box-sizing: border-box;
     text-align: center;
 }
@@ -80,6 +78,15 @@ button:hover {
     height: 5px;
 }
 
-.action_pane {
+.main {
     margin-left: 300px;
+}
+
+.titlebar {
+    background-color: grey;
+    color: white !important;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    font-size: 25px;
 }
