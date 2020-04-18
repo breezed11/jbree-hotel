@@ -23,6 +23,16 @@ function login() {
     var username = document.getElementById("uname").value;
     var password = document.getElementById("psw").value;
 
+    if (!username) {
+        window.alert("Please enter a username.");
+        return 1;
+    }
+
+    if (!password) {
+        window.alert("Please enter a password.");
+        return 1;
+    }
+
     let data_to_send = {
         "Authentication": {
             "username": username,
