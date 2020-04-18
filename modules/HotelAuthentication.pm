@@ -1,8 +1,8 @@
 #===============================================================================
 #
-#         FILE:  Hotel::Authentication
+#         FILE:  HotelAuthentication
 #
-#        USAGE:  Hotel::Authentication->new();
+#        USAGE:  HotelAuthentication->new();
 #
 #  DESCRIPTION:  Handles authentication, permissions and session management
 #
