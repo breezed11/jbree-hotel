@@ -3,4 +3,5 @@
         <a href="#" onclick="save();">Save</a>
         <a href="#" onclick="save(); close_newedit();">Save and Close</a>
         <a href="#" onclick="close_newedit();">Close without Saving</a>
+        <a href="#" onclick="delete_record();">Delete and Close</a>
 </div>

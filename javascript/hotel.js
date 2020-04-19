@@ -338,3 +338,30 @@ function save() {
         }
     });
 }
+
+function delete_record() {
+    var url_to_send = 'cgi-bin/hotel.pl';
+
+    var input = document.getElementsByName("id")[0].value;
+
+    var data_to_send = '{"Authentication":{"cookie":"';
+    data_to_send += document.getElementById("cookie").value;
+    data_to_send += '","csrf_token":"'
+    data_to_send += document.getElementById("csrf_token").value;
+    data_to_send += '"},"DeleteRecord":';
+    data_to_send += '{"id":"' + input;
+    data_to_send += '"}}';
+
+    $.ajax(url_to_send, {
+        type: 'POST',
+        data: {
+            request: data_to_send,
+            system_ref: document.getElementById("system_ref").value,
+            type: document.getElementById("save_name").value
+        },
+        success: function (result) {
+            window.alert("Deleted");
+            close_newedit();
+        }
+    });
+}

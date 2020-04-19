@@ -73,15 +73,20 @@ sub update_insert {
 
     my $query_string = "";
 
-    if ( $self->{request}->{NewEditFields}->{id} ) {
-        $query_string =
-            "UPDATE $table "
-          . $self->construct_set()
-          . " WHERE id = '"
-          . $self->{request}->{NewEditFields}->{id} . "'";
+    if ( $self->{request}->{DeleteRecord} ) {
+        $query_string = "DELETE FROM $table WHERE id = " . $self->{request}->{DeleteRecord}->{id};
     }
     else {
-        $query_string = "INSERT INTO $table " . $self->construct_set();
+        if ( $self->{request}->{NewEditFields}->{id} ) {
+            $query_string =
+                "UPDATE $table "
+              . $self->construct_set()
+              . " WHERE id = '"
+              . $self->{request}->{NewEditFields}->{id} . "'";
+        }
+        else {
+            $query_string = "INSERT INTO $table " . $self->construct_set();
+        }
     }
 
     $self->{DB}->run_query($query_string);
