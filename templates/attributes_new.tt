@@ -1,0 +1,34 @@
+[% INCLUDE newedit_actions.tt %]
+
+<div class="titlebar">
+    <a id="newedit_title">Edit Attribute</a>
+</div>
+[% IF has_data %]
+    [% FOREACH record IN data.keys.nsort %]
+        <div id="system_config_container" class="search_record_container">
+            <input id="id_neweditfield" type="hidden" name="id" class="ToSave"  value="[% data.$record.id %]">
+            <input id="save_name" type="hidden" value="updateinsert_attribute">
+            <div id="name_container" class="searchfield_container">
+                <label>Name</label>
+                <input id="name_neweditfield" class="searchfield ToSave" name="name" value="[% data.$record.name %]">
+            </div>
+            <div id="name_container" class="searchfield_container">
+                <label>Description</label>
+                <input id="description_neweditfield" class="searchfield ToSave" name="description" value="[% data.$record.description %]">
+            </div>
+        </div>
+    [% END %]
+[% ELSE %]
+    <div id="system_config_container" class="search_record_container">
+        <input id="id_neweditfield" type="hidden" name="id" class="ToSave">
+        <input id="save_name" type="hidden" value="updateinsert_attribute">
+        <div id="name_container" class="searchfield_container">
+            <label>Name</label>
+            <input id="name_neweditfield" class="searchfield ToSave" name="name">
+        </div>
+        <div id="name_container" class="searchfield_container">
+            <label>Description</label>
+            <input id="description_neweditfield" class="searchfield ToSave" name="description">
+        </div>
+    </div>
+[% END %]

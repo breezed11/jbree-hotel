@@ -41,6 +41,10 @@ sub update_insert_record {
         $to_print = $self->update_insert("system_config");
     }
 
+    if ( $self->{type} eq "updateinsert_attribute" ) {
+        $to_print = $self->update_insert("attributes");
+    }
+
     return $to_print;
 }
 

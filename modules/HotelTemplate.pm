@@ -55,18 +55,31 @@ sub new_template {
         $html_to_print = $self->construct_system_config_new();
     }
 
+    if ( $self->{type} eq "attributes" ) {
+        $html_to_print = $self->construct_attributes();
+    }
+
+    if ( $self->{type} eq "attributes_results" ) {
+        $html_to_print = $self->construct_attributes_results();
+    }
+
+    if ( $self->{type} eq "attribute_new" ) {
+        $html_to_print = $self->construct_attribute_new();
+    }
+
     return $html_to_print;
 }
 
 sub construct_where {
     my $self       = shift;
     my $use_equals = shift;
+    my $force_id   = shift;
 
     my $where = "";
 
     foreach my $key ( keys %{ $self->{request}->{SearchFields} } ) {
         if ( defined $self->{request}->{SearchFields}->{$key}
-            && $self->{request}->{SearchFields}->{$key} ne "" )
+            && ( $self->{request}->{SearchFields}->{$key} ne "" || ( $force_id && $key eq "id" ) ) )
         {
             if ($use_equals) {
                 $where .=
@@ -98,7 +111,7 @@ sub construct_vars {
         $count++;
     }
 
-    return $sorted ? { 'data' => $sorted } : {};
+    return $sorted->{0} ? { 'data' => $sorted, 'has_data' => "true" } : {};
 }
 
 sub construct_left_menu {
@@ -170,7 +183,7 @@ sub construct_system_config_new {
 
     my $lookup_query_results =
       $self->{DB}
-      ->run_query( $lookup_query_string, $self->construct_where("use_equals") );
+      ->run_query( $lookup_query_string, $self->construct_where("use_equals", "force_id") );
 
     my $vars = $self->construct_vars($lookup_query_results);
     my $system_config_new;
@@ -185,6 +198,72 @@ sub construct_system_config_new {
       || die " Template processing failed : ", $template->error(), " \n ";
 
     return $system_config_new;
+}
+
+sub construct_attributes {
+    my $self = shift;
+
+    my $system_config;
+    my $vars = {};
+
+    my $template = Template->new(
+        {
+            INCLUDE_PATH => '/var/www/html/templates'
+        }
+    );
+
+    $template->process( "attributes.tt", $vars, \$system_config )
+      || die "Template processing failed : ", $template->error(), "\n";
+
+    return $system_config;
+}
+
+sub construct_attributes_results {
+    my $self = shift;
+
+    my $lookup_query_string = "SELECT id, name, description FROM attributes";
+
+    my $lookup_query_results =
+      $self->{DB}->run_query( $lookup_query_string, $self->construct_where() );
+
+    my $vars = $self->construct_vars($lookup_query_results);
+    my $system_config_results;
+
+    my $template = Template->new(
+        {
+            INCLUDE_PATH => '/var/www/html/templates'
+        }
+    );
+
+    $template->process( "attributes_results.tt", $vars,
+        \$system_config_results )
+      || die "Template processing failed : ", $template->error(), "\n";
+
+    return $system_config_results;
+}
+
+sub construct_attribute_new {
+    my $self = shift;
+
+    my $lookup_query_string = "SELECT id, name, description FROM attributes";
+
+    my $lookup_query_results =
+      $self->{DB}
+      ->run_query( $lookup_query_string, $self->construct_where("use_equals") );
+
+    my $vars = $self->construct_vars($lookup_query_results);
+    my $attribute_new;
+
+    my $template = Template->new(
+        {
+            INCLUDE_PATH => '/var/www/html/templates'
+        }
+    );
+
+    $template->process( "attributes_new.tt", $vars, \$attribute_new )
+      || die " Template processing failed : ", $template->error(), " \n ";
+
+    return $attribute_new;
 }
 
 1;

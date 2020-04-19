@@ -4,7 +4,7 @@
 <a href="#" onclick="window.alert('Floors');">Floors</a>
 <a href="#" onclick="window.alert('Buildings');">Buildings</a>
 <a href="#" onclick="window.alert('Locations');">Locations</a>
-<a href="#" onclick="window.alert('Attributes');">Attributes</a>
+<a href="#" onclick="load_attributes();">Attributes</a>
 <a href="#" onclick="window.alert('Customers');">Customers</a>
 <a href="#" onclick="window.alert('Cleaning');">Cleaning</a>
 <a href="#" onclick="window.alert('Suppliers');">Suppliers</a>

@@ -1,0 +1,15 @@
+<div id="system_config_container" class="search_record_container">
+    <div id="name_container" class="searchfield_container">
+        <label>Name</label>
+        <input id="name_searchfield" class="searchfield">
+    </div>
+    <div id="value_container" class="searchfield_container">
+        <label>Description</label>
+        <input id="description_searchfield" class="searchfield">
+    </div>
+</div>
+<div>
+    <input type='submit' onclick='load_attributes_results()' class='refresh_results' value='Refresh'>
+    <input type='submit' onclick='new_attribute()' class='refresh_results' value='New'>
+</div>
+<div id="attributes_results"></div>
