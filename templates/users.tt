@@ -1,0 +1,19 @@
+<div id="user_container" class="search_record_container">
+    <div id="username_container" class="searchfield_container">
+        <label>Username</label>
+        <input id="username_searchfield" class="searchfield">
+    </div>
+    <div id="forename_container" class="searchfield_container">
+        <label>Forename</label>
+        <input id="forename_searchfield" class="searchfield">
+    </div>
+    <div id="surname_container" class="searchfield_container">
+        <label>Surname</label>
+        <input id="surname_searchfield" class="searchfield">
+    </div>
+</div>
+<div>
+    <input type='submit' onclick='load_users_results()' class='refresh_results' value='Refresh'>
+    <input type='submit' onclick='new_or_update("user_new")' class='refresh_results' value='New'>
+</div>
+<div id="users_results"></div>

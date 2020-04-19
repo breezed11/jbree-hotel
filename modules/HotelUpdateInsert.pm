@@ -45,6 +45,10 @@ sub update_insert_record {
         $to_print = $self->update_insert("attributes");
     }
 
+    if ( $self->{type} eq "updateinsert_user" ) {
+        $to_print = $self->update_insert("users");
+    }
+
     return $to_print;
 }
 
@@ -54,6 +58,11 @@ sub construct_set {
     my $set = "";
 
     foreach my $key ( keys %{ $self->{request}->{NewEditFields} } ) {
+        if ( $key eq "pw" ) {
+            $self->{request}->{NewEditFields}->{$key} = $self->{auth}
+              ->encrypt_password( $self->{request}->{NewEditFields}->{$key} );
+        }
+
         $set .= (
             $set
             ? ","
@@ -74,7 +83,8 @@ sub update_insert {
     my $query_string = "";
 
     if ( $self->{request}->{DeleteRecord} ) {
-        $query_string = "DELETE FROM $table WHERE id = " . $self->{request}->{DeleteRecord}->{id};
+        $query_string = "DELETE FROM $table WHERE id = "
+          . $self->{request}->{DeleteRecord}->{id};
     }
     else {
         if ( $self->{request}->{NewEditFields}->{id} ) {

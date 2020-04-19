@@ -114,10 +114,11 @@ sub check_session {
     my $csrf_token = shift;
 
     my $lookup_query_string = "SELECT id FROM sessions";
-    my $interval = $self->{config}->{timeout};
+    my $interval            = $self->{config}->{timeout};
     my $where =
 "cookie = '$cookie' AND csrf_token = '$csrf_token' AND ( last_active > NOW() - INTERVAL $interval SECOND )";
-    my $lookup_query_results = $self->{DB}->run_query($lookup_query_string, $where);
+    my $lookup_query_results =
+      $self->{DB}->run_query( $lookup_query_string, $where );
 
     unless ( $lookup_query_results->[0] ) {
         return { error => "Session has expired.", final_result => "FAIL" };
@@ -166,10 +167,10 @@ sub login {
 
     # Check user credentials
 
-    my $lookup_query_string =
-      "SELECT id, pw, active FROM users";
-    my $where = "username = '$username'";
-    my $lookup_query_results = $self->{DB}->run_query($lookup_query_string, $where);
+    my $lookup_query_string = "SELECT id, pw FROM users";
+    my $where               = "username = '$username'";
+    my $lookup_query_results =
+      $self->{DB}->run_query( $lookup_query_string, $where );
 
     unless ( $lookup_query_results->[0] ) {
         return { error => "No user found.", final_result => "FAIL" };
@@ -177,10 +178,6 @@ sub login {
 
     if ( $lookup_query_results->[1] ) {
         return { error => "Too many users found.", final_result => "FAIL" };
-    }
-
-    if ( $lookup_query_results->[0]->{active} ne "Y" ) {
-        return { error => "User not active.", final_result => "FAIL" };
     }
 
     unless (
@@ -226,10 +223,9 @@ sub create_new_user_session {
 
     # Clear down any old user sessions
 
-    my $clear_users_query_string =
-      "DELETE FROM sessions";
-    my $where = "user_id = '$userid'";
-    $self->{DB}->run_query($clear_users_query_string, $where);
+    my $clear_users_query_string = "DELETE FROM sessions";
+    my $where                    = "user_id = '$userid'";
+    $self->{DB}->run_query( $clear_users_query_string, $where );
 
     # Create the new cookie and csrf token
 
@@ -272,6 +268,30 @@ sub create_auth_cookies {
     $csrf_token .= $chars[ rand @chars ] for 1 .. 16;
 
     return ( $cookie, $csrf_token );
+}
+
+#################### subroutine header begin ####################
+
+=head2 encrypt_password
+
+ Usage     : $self->encrypt_password(password)
+ Purpose   : Encrypts passwords for storage
+ Returns   : Encrypted passwprd
+ Argument  : Plain text password
+ Throws    : 
+ Comment   : 
+
+See Also   :
+
+=cut
+
+#################### subroutine header end ####################
+
+sub encrypt_password {
+    my $self       = shift;
+    my $plain_text = shift;
+
+    return $self->{crypt}->generate($plain_text);
 }
 
 1;

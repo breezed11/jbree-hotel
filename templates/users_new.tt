@@ -1,0 +1,60 @@
+[% IF has_data %]
+    <div id="left_menu" class="left_menu"><a class="title">Actions</a>
+		<div class="splitter"></div>
+        <a href="#" onclick="save();">Save</a>
+        <a href="#" onclick="save(); close_newedit();">Save and Close</a>
+        <a href="#" onclick="close_newedit();">Close without Saving</a>
+        <a href="#" onclick="reset_password_form();">Reset User Password</a>
+        <a href="#" onclick="delete_record();">Delete and Close</a>
+    </div>
+
+    <div class="titlebar">
+        <a id="newedit_title">Edit User</a>
+    </div>
+    [% FOREACH record IN data.keys.nsort %]
+        <div id="system_config_container" class="search_record_container">
+            <input id="id_neweditfield" type="hidden" name="id" class="ToSave"  value="[% data.$record.id %]">
+            <input id="save_name" type="hidden" value="updateinsert_user">
+            <div id="username_container" class="searchfield_container">
+                <label>Username</label>
+                <input id="username_neweditfield" class="searchfield ToSave" name="username" value="[% data.$record.username %]">
+            </div>
+            <div id="forename_container" class="searchfield_container">
+                <label>Forename</label>
+                <input id="forename_neweditfield" class="searchfield ToSave" name="forename" value="[% data.$record.forename %]">
+            </div>
+            <div id="surname_container" class="searchfield_container">
+                <label>Surname</label>
+                <input id="surname_neweditfield" class="searchfield ToSave" name="surname" value="[% data.$record.surname %]">
+            </div>
+        </div>
+    [% END %]
+    <div id="password_reset"></div>
+[% ELSE %]
+    [% INCLUDE newedit_actions.tt %]
+
+    <div class="titlebar">
+        <a id="newedit_title">Edit User</a>
+    </div>
+
+    <div id="system_config_container" class="search_record_container">
+            <input id="id_neweditfield" type="hidden" name="id" class="ToSave">
+            <input id="save_name" type="hidden" value="updateinsert_user">
+            <div id="username_container" class="searchfield_container">
+                <label>Username</label>
+                <input id="username_neweditfield" class="searchfield ToSave" name="username">
+            </div>
+            <div id="forename_container" class="searchfield_container">
+                <label>Forename</label>
+                <input id="forename_neweditfield" class="searchfield ToSave" name="forename">
+            </div>
+            <div id="surname_container" class="searchfield_container">
+                <label>Surname</label>
+                <input id="surname_neweditfield" class="searchfield ToSave" name="surname">
+            </div>
+            <div id="pw_container" class="searchfield_container">
+                <label>Password</label>
+                <input id="pw_neweditfield" type="password" class="searchfield ToSave" name="pw">
+            </div>
+        </div>
+[% END %]

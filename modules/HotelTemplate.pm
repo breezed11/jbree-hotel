@@ -67,6 +67,22 @@ sub new_template {
         $html_to_print = $self->construct_attribute_new();
     }
 
+    if ( $self->{type} eq "users" ) {
+        $html_to_print = $self->construct_users();
+    }
+
+    if ( $self->{type} eq "users_results" ) {
+        $html_to_print = $self->construct_users_results();
+    }
+
+    if ( $self->{type} eq "user_new" ) {
+        $html_to_print = $self->construct_user_new();
+    }
+
+    if ( $self->{type} eq "password_reset" ) {
+        $html_to_print = $self->construct_password_reset_form();
+    }
+
     return $html_to_print;
 }
 
@@ -78,8 +94,11 @@ sub construct_where {
     my $where = "";
 
     foreach my $key ( keys %{ $self->{request}->{SearchFields} } ) {
-        if ( defined $self->{request}->{SearchFields}->{$key}
-            && ( $self->{request}->{SearchFields}->{$key} ne "" || ( $force_id && $key eq "id" ) ) )
+        if (
+            defined $self->{request}->{SearchFields}->{$key}
+            && ( $self->{request}->{SearchFields}->{$key} ne ""
+                || ( $force_id && $key eq "id" ) )
+          )
         {
             if ($use_equals) {
                 $where .=
@@ -114,11 +133,12 @@ sub construct_vars {
     return $sorted->{0} ? { 'data' => $sorted, 'has_data' => "true" } : {};
 }
 
-sub construct_left_menu {
-    my $self = shift;
+sub make_data {
+    my $self          = shift;
+    my $vars          = shift;
+    my $template_file = shift;
 
-    my $left_menu;
-    my $vars = {};
+    my $data;
 
     my $template = Template->new(
         {
@@ -126,28 +146,22 @@ sub construct_left_menu {
         }
     );
 
-    $template->process( "left_menu.tt", $vars, \$left_menu )
-      || die "Template processing failed : ", $template->error(), "\n";
+    $template->process( $template_file, $vars, \$data )
+      || die " Template processing failed : ", $template->error(), " \n ";
 
-    return $left_menu;
+    return $data;
+}
+
+sub construct_left_menu {
+    my $self = shift;
+
+    return $self->make_data( {}, "left_menu.tt" );
 }
 
 sub construct_system_config {
     my $self = shift;
 
-    my $system_config;
-    my $vars = {};
-
-    my $template = Template->new(
-        {
-            INCLUDE_PATH => '/var/www/html/templates'
-        }
-    );
-
-    $template->process( "system_config.tt", $vars, \$system_config )
-      || die "Template processing failed : ", $template->error(), "\n";
-
-    return $system_config;
+    return $self->make_data( {}, "system_config.tt" );
 }
 
 sub construct_system_config_results {
@@ -160,19 +174,8 @@ sub construct_system_config_results {
       $self->{DB}->run_query( $lookup_query_string, $self->construct_where() );
 
     my $vars = $self->construct_vars($lookup_query_results);
-    my $system_config_results;
 
-    my $template = Template->new(
-        {
-            INCLUDE_PATH => '/var/www/html/templates'
-        }
-    );
-
-    $template->process( "system_config_results.tt", $vars,
-        \$system_config_results )
-      || die "Template processing failed : ", $template->error(), "\n";
-
-    return $system_config_results;
+    return $self->make_data( $vars, "system_config_results.tt" );
 }
 
 sub construct_system_config_new {
@@ -182,40 +185,18 @@ sub construct_system_config_new {
       "SELECT id, name, display_name, value FROM system_config";
 
     my $lookup_query_results =
-      $self->{DB}
-      ->run_query( $lookup_query_string, $self->construct_where("use_equals", "force_id") );
+      $self->{DB}->run_query( $lookup_query_string,
+        $self->construct_where( "use_equals", "force_id" ) );
 
     my $vars = $self->construct_vars($lookup_query_results);
-    my $system_config_new;
 
-    my $template = Template->new(
-        {
-            INCLUDE_PATH => '/var/www/html/templates'
-        }
-    );
-
-    $template->process( "system_config_new.tt", $vars, \$system_config_new )
-      || die " Template processing failed : ", $template->error(), " \n ";
-
-    return $system_config_new;
+    return $self->make_data( $vars, "system_config_new.tt" );
 }
 
 sub construct_attributes {
     my $self = shift;
 
-    my $system_config;
-    my $vars = {};
-
-    my $template = Template->new(
-        {
-            INCLUDE_PATH => '/var/www/html/templates'
-        }
-    );
-
-    $template->process( "attributes.tt", $vars, \$system_config )
-      || die "Template processing failed : ", $template->error(), "\n";
-
-    return $system_config;
+    return $self->make_data( {}, "attributes.tt" );
 }
 
 sub construct_attributes_results {
@@ -227,19 +208,8 @@ sub construct_attributes_results {
       $self->{DB}->run_query( $lookup_query_string, $self->construct_where() );
 
     my $vars = $self->construct_vars($lookup_query_results);
-    my $system_config_results;
 
-    my $template = Template->new(
-        {
-            INCLUDE_PATH => '/var/www/html/templates'
-        }
-    );
-
-    $template->process( "attributes_results.tt", $vars,
-        \$system_config_results )
-      || die "Template processing failed : ", $template->error(), "\n";
-
-    return $system_config_results;
+    return $self->make_data( $vars, "attributes_results.tt" );
 }
 
 sub construct_attribute_new {
@@ -252,18 +222,47 @@ sub construct_attribute_new {
       ->run_query( $lookup_query_string, $self->construct_where("use_equals") );
 
     my $vars = $self->construct_vars($lookup_query_results);
-    my $attribute_new;
 
-    my $template = Template->new(
-        {
-            INCLUDE_PATH => '/var/www/html/templates'
-        }
-    );
+    return $self->make_data( $vars, "attributes_new.tt" );
+}
 
-    $template->process( "attributes_new.tt", $vars, \$attribute_new )
-      || die " Template processing failed : ", $template->error(), " \n ";
+sub construct_users {
+    my $self = shift;
 
-    return $attribute_new;
+    return $self->make_data( {}, "users.tt" );
+}
+
+sub construct_users_results {
+    my $self = shift;
+
+    my $lookup_query_string = "SELECT id, username, forename, surname FROM users";
+
+    my $lookup_query_results =
+      $self->{DB}->run_query( $lookup_query_string, $self->construct_where() );
+
+    my $vars = $self->construct_vars($lookup_query_results);
+
+    return $self->make_data( $vars, "users_results.tt" );
+}
+
+sub construct_user_new {
+    my $self = shift;
+
+    my $lookup_query_string = "SELECT id, username, forename, surname FROM users";
+
+    my $lookup_query_results =
+      $self->{DB}
+      ->run_query( $lookup_query_string, $self->construct_where("use_equals") );
+
+    my $vars = $self->construct_vars($lookup_query_results);
+
+    return $self->make_data( $vars, "users_new.tt" );
+}
+
+sub construct_password_reset_form {
+    my $self = shift;
+
+    return $self->make_data( {}, "reset_password.tt" );
 }
 
 1;

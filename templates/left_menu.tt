@@ -9,7 +9,7 @@
 <a href="#" onclick="window.alert('Cleaning');">Cleaning</a>
 <a href="#" onclick="window.alert('Room Bookings');">Room Bookings</a>
 <a href="#" onclick="window.alert('Reports');">Reports</a>
-<a href="#" onclick="window.alert('Users');">Users</a>
+<a href="#" onclick="load_users();">Users</a>
 <a href="#" onclick="load_system_config();">System Config</a>
 <div class="splitter"></div>
 <a href="#" onclick="logout();">Logout</a>

@@ -69,7 +69,7 @@ my $response;
 if ( $type =~ /updateinsert/ ) {
 
     my $updateinsert =
-      HotelUpdateInsert->new( DB => $db, request => $request, type => $type );
+      HotelUpdateInsert->new( DB => $db, request => $request, type => $type, auth => $auth );
 
     $response = $updateinsert->update_insert_record();
 }

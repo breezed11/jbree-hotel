@@ -9,7 +9,7 @@
            <tr>
                 <td>[% data.$record.display_name %]</td>
                 <td>[% data.$record.value %]</td>
-                <td><input type='submit' onclick='new_system_config_option(this.name)' class='results_action' name='[% data.$record.id %]' value='Edit'></td>
+                <td><input type='submit' onclick='new_or_update("system_config_new", this.name)' class='results_action' name='[% data.$record.id %]' value='Edit'></td>
            </tr>
         [% END %]
     </tbody>

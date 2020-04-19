@@ -10,6 +10,6 @@
 </div>
 <div>
     <input type='submit' onclick='load_attributes_results()' class='refresh_results' value='Refresh'>
-    <input type='submit' onclick='new_attribute()' class='refresh_results' value='New'>
+    <input type='submit' onclick='new_or_update("attribute_new")' class='refresh_results' value='New'>
 </div>
 <div id="attributes_results"></div>

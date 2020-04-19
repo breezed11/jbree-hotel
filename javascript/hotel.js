@@ -90,206 +90,6 @@ function login() {
 
 }
 
-function load_system_config() {
-    var url_to_send = 'cgi-bin/hotel.pl';
-    var data_to_send = {
-        "Authentication": {
-            "cookie": document.getElementById("cookie").value,
-            "csrf_token": document.getElementById("csrf_token").value
-        }
-    };
-
-    data_to_send = JSON.stringify(data_to_send);
-
-    $.ajax(url_to_send, {
-        type: 'POST',
-        data: {
-            request: data_to_send,
-            system_ref: document.getElementById("system_ref").value,
-            type: "system_config"
-        },
-        success: function (result) {
-            check_for_errors(result);
-            document.getElementById("action_pane").innerHTML = result;
-            document.getElementById("title").innerHTML = "System Config";
-            load_system_config_results();
-
-        }
-    });
-}
-
-function load_system_config_results() {
-    var url_to_send = 'cgi-bin/hotel.pl';
-    var data_to_send = {
-        "Authentication": {
-            "cookie": document.getElementById("cookie").value,
-            "csrf_token": document.getElementById("csrf_token").value
-        },
-        "SearchFields": {
-            "display_name": document.getElementById("name_searchfield").value,
-            "value": document.getElementById("value_searchfield").value,
-        }
-    };
-    data_to_send = JSON.stringify(data_to_send);
-    $.ajax(url_to_send, {
-        type: 'POST',
-        data: {
-            request: data_to_send,
-            system_ref: document.getElementById("system_ref").value,
-            type: "system_config_results"
-        },
-        success: function (result) {
-            check_for_errors(result);
-            document.getElementById("system_config_results").innerHTML = result;
-        }
-    });
-}
-
-function load_attributes() {
-    var url_to_send = 'cgi-bin/hotel.pl';
-    var data_to_send = {
-        "Authentication": {
-            "cookie": document.getElementById("cookie").value,
-            "csrf_token": document.getElementById("csrf_token").value
-        }
-    };
-
-    data_to_send = JSON.stringify(data_to_send);
-
-    $.ajax(url_to_send, {
-        type: 'POST',
-        data: {
-            request: data_to_send,
-            system_ref: document.getElementById("system_ref").value,
-            type: "attributes"
-        },
-        success: function (result) {
-            check_for_errors(result);
-            document.getElementById("action_pane").innerHTML = result;
-            document.getElementById("title").innerHTML = "Attributes";
-            load_attributes_results();
-
-        }
-    });
-}
-
-function load_attributes_results() {
-    var url_to_send = 'cgi-bin/hotel.pl';
-    var data_to_send = {
-        "Authentication": {
-            "cookie": document.getElementById("cookie").value,
-            "csrf_token": document.getElementById("csrf_token").value
-        },
-        "SearchFields": {
-            "name": document.getElementById("name_searchfield").value,
-            "description": document.getElementById("description_searchfield").value,
-        }
-    };
-    data_to_send = JSON.stringify(data_to_send);
-    $.ajax(url_to_send, {
-        type: 'POST',
-        data: {
-            request: data_to_send,
-            system_ref: document.getElementById("system_ref").value,
-            type: "attributes_results"
-        },
-        success: function (result) {
-            check_for_errors(result);
-            document.getElementById("attributes_results").innerHTML = result;
-        }
-    });
-}
-
-function new_attribute(id) {
-    var url_to_send = 'cgi-bin/hotel.pl';
-
-    if (!id) {
-        id = "0";
-    }
-
-    var data_to_send = {
-        "Authentication": {
-            "cookie": document.getElementById("cookie").value,
-            "csrf_token": document.getElementById("csrf_token").value
-        },
-        "SearchFields": {
-            "id": id
-        }
-    };
-
-    data_to_send = JSON.stringify(data_to_send);
-    $.ajax(url_to_send, {
-        type: 'POST',
-        data: {
-            request: data_to_send,
-            system_ref: document.getElementById("system_ref").value,
-            type: "attribute_new"
-        },
-        success: function (result) {
-            check_for_errors(result);
-            var new_or_edit = document.getElementById("new_or_edit");
-            var span = document.getElementsByClassName("close_new_or_edit")[0];
-            new_or_edit.style.display = "block";
-            span.onclick = function () {
-                new_or_edit.style.display = "none";
-            }
-            window.onclick = function (event) {
-                if (event.target == new_or_edit) {
-                    new_or_edit.style.display = "none";
-                }
-            }
-            var elem = document.getElementById("new_or_edit_content");
-            elem.innerHTML = result;
-        }
-    });
-}
-
-function new_system_config_option(id) {
-    var url_to_send = 'cgi-bin/hotel.pl';
-
-    if (!id) {
-        id = "0";
-    }
-
-    var data_to_send = {
-        "Authentication": {
-            "cookie": document.getElementById("cookie").value,
-            "csrf_token": document.getElementById("csrf_token").value
-        },
-        "SearchFields": {
-            "id": id
-        }
-    };
-
-    data_to_send = JSON.stringify(data_to_send);
-    $.ajax(url_to_send, {
-        type: 'POST',
-        data: {
-            request: data_to_send,
-            system_ref: document.getElementById("system_ref").value,
-            type: "system_config_new"
-        },
-        success: function (result) {
-            check_for_errors(result);
-            var new_or_edit = document.getElementById("new_or_edit");
-            var span = document.getElementsByClassName("close_new_or_edit")[0];
-            new_or_edit.style.display = "block";
-            span.onclick = function () {
-                new_or_edit.style.display = "none";
-                document.getElementById("new_or_edit_content").innerHTML = "";
-            }
-            window.onclick = function (event) {
-                if (event.target == new_or_edit) {
-                    $('new_or_edit_content').empty();
-                    new_or_edit.style.display = "none";
-                }
-            }
-            var elem = document.getElementById("new_or_edit_content");
-            elem.innerHTML = result;
-        }
-    });
-}
-
 function close_newedit() {
     $('new_or_edit_content').empty();
     document.getElementById("new_or_edit").style.display = "none";
@@ -364,4 +164,53 @@ function delete_record() {
             close_newedit();
         }
     });
+}
+
+function new_or_update(type_ref, id) {
+    var url_to_send = 'cgi-bin/hotel.pl';
+
+    if (!id) {
+        id = "0";
+    }
+
+    var data_to_send = {
+        "Authentication": {
+            "cookie": document.getElementById("cookie").value,
+            "csrf_token": document.getElementById("csrf_token").value
+        },
+        "SearchFields": {
+            "id": id
+        }
+    };
+
+    data_to_send = JSON.stringify(data_to_send);
+    $.ajax(url_to_send, {
+        type: 'POST',
+        data: {
+            request: data_to_send,
+            system_ref: document.getElementById("system_ref").value,
+            type: type_ref
+        },
+        success: function (result) {
+            check_for_errors(result);
+            var new_or_edit = document.getElementById("new_or_edit");
+            var span = document.getElementsByClassName("close_new_or_edit")[0];
+            new_or_edit.style.display = "block";
+            span.onclick = function () {
+                new_or_edit.style.display = "none";
+            }
+            window.onclick = function (event) {
+                if (event.target == new_or_edit) {
+                    new_or_edit.style.display = "none";
+                }
+            }
+            var elem = document.getElementById("new_or_edit_content");
+            elem.innerHTML = result;
+        }
+    });
+}
+
+function revert_old_newedit() {
+    document.getElementById("new_or_edit_content").innerHTML = document.getElementById("new_or_edit_content_old").innerHTML;
+    document.getElementById("new_or_edit_content_old").innerHTML = "";
 }
