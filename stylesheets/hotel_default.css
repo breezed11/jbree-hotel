@@ -85,7 +85,6 @@ button:hover {
 .titlebar {
     background-color: grey;
     color: white !important;
-    width: 100%;
     padding: 10px;
     text-align: center;
     font-size: 25px;
@@ -170,20 +169,6 @@ th {
     margin-bottom: 50px;
     padding: 20px;
     border: 1px solid grey;
-}
-
-.close_new_or_edit {
-    color: darkgrey;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close_new_or_edit:hover,
-.close_new_or_edit:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
 }
 
 .newedit_buttons {

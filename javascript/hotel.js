@@ -194,11 +194,7 @@ function new_or_update(type_ref, id) {
         success: function (result) {
             check_for_errors(result);
             var new_or_edit = document.getElementById("new_or_edit");
-            var span = document.getElementsByClassName("close_new_or_edit")[0];
             new_or_edit.style.display = "block";
-            span.onclick = function () {
-                new_or_edit.style.display = "none";
-            }
             window.onclick = function (event) {
                 if (event.target == new_or_edit) {
                     new_or_edit.style.display = "none";
